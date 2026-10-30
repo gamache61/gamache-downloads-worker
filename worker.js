@@ -59,7 +59,10 @@ export default {
           ${a.url ? `<a class="btn" href="${esc(a.url)}" target="_blank" rel="noopener">Open ${esc(a.name)}</a>` : ""}
           <ol class="steps">
             <li>Click <b>Open ${esc(a.name)}</b>.</li>
-            <li>Install it: click the <b>install icon</b> at the right end of the address bar (Chrome or Edge). On a phone, use <b>Add to Home Screen</b>.</li>
+            <li>Install it:<br>
+              <b>Chrome (computer):</b> ⋮ menu → <b>Cast, save and share</b> → <b>Install page as app</b><br>
+              <b>Edge (computer):</b> ⋯ menu → <b>Apps</b> → <b>Install this site as an app</b><br>
+              <b>Phone:</b> browser menu → <b>Add to Home Screen</b> (iPhone: Share button → Add to Home Screen)</li>
             <li>In the app, click <b>🔑 Unlock</b> and enter your key.</li>
           </ol>
           <p class="small">Works on up to ${MAX_DEVICES} devices. Write your key down or save this page.</p></div>`;
