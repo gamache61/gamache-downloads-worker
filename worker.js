@@ -2,8 +2,8 @@
 // Needs secrets: STRIPE_SECRET_KEY and GITHUB_TOKEN.
 //
 // Stripe product metadata (pick one per product):
-//   Unlock-key apps:  app = AXLE            (short code, letters only)
-//                     app_url = https://gamache61.github.io/MyAxelWeightsApp/
+//   Unlock-key apps:  app = DG              (short code, letters only)
+//                     app_url = https://gamache61.github.io/MyDGCheckerApp/
 //   File downloads:   file = ExactFileName.zip   (comma-separate for several files)
 
 import { DurableObject } from "cloudflare:workers";
@@ -63,7 +63,7 @@ export default {
               <b>Chrome (computer):</b> ⋮ menu → <b>Cast, save and share</b> → <b>Install page as app</b><br>
               <b>Edge (computer):</b> ⋯ menu → <b>Apps</b> → <b>Install this site as an app</b><br>
               <b>Phone:</b> browser menu → <b>Add to Home Screen</b> (iPhone: Share button → Add to Home Screen)</li>
-            <li>In the app, click <b>🔑 Unlock</b> and enter your key.</li>
+            <li>Open the installed app, type your key in the box that appears, and click <b>Unlock</b>.</li>
           </ol>
           <p class="small">Works on up to ${MAX_DEVICES} devices. Write your key down or save this page.</p></div>`;
       }
