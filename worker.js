@@ -49,7 +49,7 @@ export default {
         body: form
       });
       const s = await res.json().catch(() => ({}));
-      if (!res.ok || !s.url) return json({ ok: false, error: "Checkout could not be started. Please try again." });
+      if (!res.ok || !s.url) return json({ ok: false, error: "Checkout could not be started. Please try again.", detail: (s.error && s.error.message) || ("Stripe status " + res.status) });
       return json({ ok: true, url: s.url });
     }
 
