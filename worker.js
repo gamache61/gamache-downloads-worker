@@ -13,8 +13,8 @@ const PDF_PRICES = {
   hos: "price_1UePaiH5ItCgVsLGqOLRl9tc",
   tdg: "price_1UePaiH5ItCgVsLGvGJPim3k",
   axle: "price_1UePajH5ItCgVsLGJw84qNeT"
-, launch:"price_1UeQpuH5ItCgVsLGyq5vQnpn", pricing:"price_1UeQpvH5ItCgVsLGyxa5zlCp", tracker:"price_1UeQpvH5ItCgVsLGUYvBbAWQ", social:"price_1UeQpwH5ItCgVsLGgHFBln0W", productlaunch:"price_1UeQpxH5ItCgVsLG4C56Mh7H", budget:"price_1UeQpyH5ItCgVsLGdobYTpOy", meals:"price_1UeQpzH5ItCgVsLGaeJH9bnf", roadtrip:"price_1UeQq0H5ItCgVsLGqCFFvZSG", goals:"price_1UeQq0H5ItCgVsLGdM2HulAG", home:"price_1UeQq1H5ItCgVsLGgRZQW4Vx"};
-const PDF_COUPON = "I0uW49LC";
+, launch:"price_1UeQpuH5ItCgVsLGyq5vQnpn", pricing:"price_1UeQpvH5ItCgVsLGyxa5zlCp", tracker:"price_1UeQpvH5ItCgVsLGUYvBbAWQ", social:"price_1UeQpwH5ItCgVsLGgHFBln0W", productlaunch:"price_1UeQpxH5ItCgVsLG4C56Mh7H", budget:"price_1UeQpyH5ItCgVsLGdobYTpOy", meals:"price_1UeQpzH5ItCgVsLGaeJH9bnf", roadtrip:"price_1UeQq0H5ItCgVsLGqCFFvZSG", goals:"price_1UeQq0H5ItCgVsLGdM2HulAG", home:"price_1UeQq1H5ItCgVsLGgRZQW4Vx", invoice:"price_1UeRC8H5ItCgVsLG6FhCg2ev", onboarding:"price_1UeRC9H5ItCgVsLG0eNsZOhK", weekly:"price_1UeRC9H5ItCgVsLGKaa5SP5N", feedback:"price_1UeRCAH5ItCgVsLG7F5eRhJZ", startup:"price_1UeRCBH5ItCgVsLG5nvSGWfq", habits:"price_1UeRCCH5ItCgVsLGbvwDCuiL", moving:"price_1UeRCCH5ItCgVsLGNZsfbSYJ", emergency:"price_1UeRCDH5ItCgVsLGg1tOGjd8", holiday:"price_1UeRCEH5ItCgVsLGZo8guYJD", jobsearch:"price_1UeRCFH5ItCgVsLGnEAntUqk"};
+const PDF_COUPON = "TvKrhXMp";
 const PDF_DISCOUNT_MIN = 5;
 const PDF_SITE = "https://gamache61.github.io/";
 
