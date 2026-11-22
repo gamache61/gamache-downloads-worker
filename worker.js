@@ -9,7 +9,7 @@ var DAYS_ALLOWED = 30;
 var MAX_DEVICES = 2;
 var SUPPORT_EMAIL = "gamacheapps@gmail.com";
 var worker_default = {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const sid = url.searchParams.get("session_id") || "";
     if (request.method === "OPTIONS") return new Response(null, { headers: cors() });
@@ -27,6 +27,7 @@ var worker_default = {
       if (r.error === "notfound") return json({ ok: false, error: "That key isn't valid. Check it and try again." });
       if (r.error === "wrongapp") return json({ ok: false, error: "That key is for a different app." });
       if (r.error === "full") return json({ ok: false, error: `This key is already used on ${MAX_DEVICES} devices. Email ${SUPPORT_EMAIL} for help.` });
+      if (r.isNew) ctx.waitUntil(notify(env, `Unlocked on a device: ${app}`, [`App: ${app}`, `Key: ${key}`, `Devices on this key: ${r.count} of ${MAX_DEVICES}`, `Device: ${device}`]));
       return json({ ok: true });
     }
     if (url.pathname === "/reset") {
@@ -42,7 +43,9 @@ var worker_default = {
       if (result.error) return page("Download problem", `<p>${esc(result.error)}</p>${help()}`, 403);
       let html = "";
       for (const a of result.apps) {
-        const key = await store(env).keyFor(sid, a.code);
+        const kr = await store(env).keyFor(sid, a.code);
+        const key = kr.key;
+        if (kr.isNew) ctx.waitUntil(notify(env, `New purchase: ${a.name}`, [`App: ${a.name}`, `Key: ${key}`, `Mode: ${sid.startsWith("cs_live_") ? "LIVE" : "test"}`]));
         html += `<div class="keybox"><p class="small">${esc(a.name)} \u2014 your unlock key:</p>
           <p class="key">${esc(key)}</p>
           ${a.url ? `<a class="btn" href="${esc(a.url)}" target="_blank" rel="noopener">Open ${esc(a.name)}</a>` : ""}
@@ -67,6 +70,7 @@ var worker_default = {
       if (result.error) return page("Download problem", `<p>${esc(result.error)}</p>${help()}`, 403);
       if (!result.files.includes(f)) return page("Download problem", `<p>That file is not part of this purchase.</p>${help()}`, 403);
       const got = await getFile(f, env);
+      if (!got.error) ctx.waitUntil(notify(env, `File downloaded: ${f}`, [`File: ${f}`, `Mode: ${sid.startsWith("cs_live_") ? "LIVE" : "test"}`]));
       if (got.error) return page("Download problem", `<p>The file could not be found.</p><p class="small">${esc(got.error)}</p>${help()}`, 404);
       return new Response(got.body, {
         headers: {
@@ -93,24 +97,24 @@ var Licenses = class extends DurableObject {
   }
   async keyFor(sid, app) {
     const existing = await this.ctx.storage.get(`s:${sid}:${app}`);
-    if (existing) return existing;
+    if (existing) return { key: existing, isNew: false };
     let key;
     do {
       key = `${app}-${rand4()}-${rand4()}`;
     } while (await this.ctx.storage.get(`k:${key}`));
     await this.ctx.storage.put(`k:${key}`, { app, sid, devices: [], created: Date.now() });
     await this.ctx.storage.put(`s:${sid}:${app}`, key);
-    return key;
+    return { key, isNew: true };
   }
   async activate(key, app, device, max) {
     const rec = await this.ctx.storage.get(`k:${key}`);
     if (!rec) return { error: "notfound" };
     if (rec.app !== app) return { error: "wrongapp" };
-    if (rec.devices.includes(device)) return { ok: true };
+    if (rec.devices.includes(device)) return { ok: true, isNew: false };
     if (rec.devices.length >= max) return { error: "full" };
     rec.devices.push(device);
     await this.ctx.storage.put(`k:${key}`, rec);
-    return { ok: true };
+    return { ok: true, isNew: true, count: rec.devices.length };
   }
   async reset(key) {
     const rec = await this.ctx.storage.get(`k:${key}`);
@@ -120,6 +124,25 @@ var Licenses = class extends DurableObject {
     return true;
   }
 };
+async function notify(env, subject, lines) {
+  const k = (env.RESEND_API_KEY || "").trim();
+  if (!k) return;
+  const when = new Date().toLocaleString("en-CA", { timeZone: "America/Vancouver" });
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${k}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "Gamache Apps <onboarding@resend.dev>",
+        to: [(env.NOTIFY_EMAIL || SUPPORT_EMAIL).trim()],
+        subject,
+        text: [...lines, `Time: ${when} (Vancouver)`].join("\n")
+      })
+    });
+  } catch (e) {
+  }
+}
+__name(notify, "notify");
 function store(env) {
   return env.LICENSES.get(env.LICENSES.idFromName("all"));
 }
